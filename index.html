@@ -2,36 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
-    <title>Request your Grade right now!!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#3b82f6">
+    <title>Grade Viewer - Academic Result Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="head.jpg" type="image/jpeg">
     <style>
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
         
         .animate-float {
-            animation: float 3s ease-in-out infinite;
+            animation: float 3.5s ease-in-out infinite;
         }
 
         .scale-in {
-            animation: scaleIn 0.5s ease-out;
+            animation: scaleIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
+            from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
         .slide-in {
-            animation: slideIn 0.5s ease-out;
+            animation: slideIn 0.35s ease-out forwards;
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
+            from { transform: translateY(-10px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
@@ -42,24 +45,22 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.15;
+            opacity: 0.03;
         }
 
-        /* Add more contrast to content */
         .content-wrapper {
             position: relative;
             z-index: 1;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .typing-animation {
             overflow: hidden;
             white-space: nowrap;
-            border-right: 3px solid;
+            border-right: 3px solid rgba(59, 130, 246, 0.8);
             width: 0;
             animation: 
-                typing 2s steps(20) forwards,
-                blink 0.8s infinite;
+                typing 3s steps(30) forwards,
+                blink 1s infinite;
         }
 
         @keyframes typing {
@@ -68,9 +69,9 @@
         }
 
         @keyframes blink {
-            from { border-color: transparent }
-            50% { border-color: white }
-            to { border-color: transparent }
+            from { border-color: rgba(59, 130, 246, 0.8) }
+            50% { border-color: transparent }
+            to { border-color: rgba(59, 130, 246, 0.8) }
         }
 
         .typing-container {
@@ -81,9 +82,9 @@
         .loader-container {
             position: fixed;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 50%, #e5e7eb 100%);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -109,9 +110,9 @@
         }
 
         @keyframes umbral {
-            0% { stop-color: #d3a5102e; }
-            50% { stop-color: rgba(211, 165, 16, 0.519); }
-            100% { stop-color: #d3a5102e; }
+            0% { stop-color: rgba(59, 130, 246, 0.2); }
+            50% { stop-color: rgba(59, 130, 246, 0.4); }
+            100% { stop-color: rgba(59, 130, 246, 0.2); }
         }
 
         @keyframes particles {
@@ -140,13 +141,16 @@
 
         .loading-counter {
             position: absolute;
-            bottom: 30%;
-            font-size: 2rem;
-            color: #fff;
-            font-family: monospace;
+            bottom: 32%;
+            font-size: clamp(2rem, 8vw, 3rem);
+            color: #1f2937;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             text-align: center;
             width: 100%;
             animation: heartbeat 1.5s ease-in-out infinite;
+            font-weight: 700;
+            letter-spacing: -1px;
+            padding: 0 20px;
         }
 
         .loading-dots::after {
@@ -163,17 +167,18 @@
 
         @keyframes heartbeat {
             0% { transform: scale(1); }
-            14% { transform: scale(1.3); }
+            14% { transform: scale(1.1); }
             28% { transform: scale(1); }
-            42% { transform: scale(1.3); }
+            42% { transform: scale(1.1); }
             70% { transform: scale(1); }
         }
 
         .loading-text {
-            font-size: 1rem;
-            margin-top: 10px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 20px;
+            color: #6b7280;
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         .loading-text {
@@ -181,9 +186,9 @@
         }
 
         @keyframes glow {
-            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
-            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); }
-            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+            0% { color: #6b7280; }
+            50% { color: #3b82f6; }
+            100% { color: #6b7280; }
         }
 
         .cube-container {
@@ -191,45 +196,43 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
         .cube {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             position: relative;
             transform-style: preserve-3d;
-            animation: rotate 8s infinite linear;
+            animation: rotate 12s infinite linear;
         }
 
         .face {
             position: absolute;
-            width: 100px;
-            height: 100px;
-            border: 2px solid rgba(0, 0, 0, 0.2);
+            width: 80px;
+            height: 80px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 2px;
-            background: #000;
+            gap: 1px;
+            background: rgba(59, 130, 246, 0.08);
         }
 
-        /* Real Rubik's cube colors */
-        .front .cube-piece { background: #FF0000; }  /* Red */
-        .back .cube-piece { background: #FFA500; }   /* Orange */
-        .right .cube-piece { background: #0000FF; }  /* Blue */
-        .left .cube-piece { background: #00FF00; }   /* Green */
-        .top .cube-piece { background: #FFFFFF; }    /* White */
-        .bottom .cube-piece { background: #FFFF00; } /* Yellow */
+        .front .cube-piece { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .back .cube-piece { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .right .cube-piece { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .left .cube-piece { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .top .cube-piece { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .bottom .cube-piece { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
 
         .cube-piece {
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 0 4px rgba(59, 130, 246, 0.15);
             animation: pieceSpin 3s infinite ease-in-out;
             transform-style: preserve-3d;
             border-radius: 2px;
         }
 
-        /* Enhanced cube animations */
         @keyframes rotate {
             0% { 
                 transform: rotateX(0) rotateY(0) rotateZ(0); 
@@ -243,22 +246,20 @@
             100% { 
                 transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); 
             }
-
         }
 
         @keyframes pieceSpin {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(0.95) rotateY(10deg); }
+            50% { transform: scale(0.95); }
         }
 
-        .front { transform: translateZ(50px); }
-        .back { transform: translateZ(-50px) rotateY(180deg); }
-        .right { transform: translateX(50px) rotateY(90deg); }
-        .left { transform: translateX(-50px) rotateY(-90deg); }
-        .top { transform: translateY(-50px) rotateX(90deg); }
-        .bottom { transform: translateY(50px) rotateX(-90deg); }
+        .front { transform: translateZ(40px); }
+        .back { transform: translateZ(-40px) rotateY(180deg); }
+        .right { transform: translateX(40px) rotateY(90deg); }
+        .left { transform: translateX(-40px) rotateY(-90deg); }
+        .top { transform: translateY(-40px) rotateX(90deg); }
+        .bottom { transform: translateY(40px) rotateX(-90deg); }
 
-        /* Add shine effect */
         .cube-piece::after {
             content: '';
             position: absolute;
@@ -268,25 +269,549 @@
             bottom: 0;
             background: linear-gradient(
                 135deg,
-                rgba(255,255,255,0.3) 0%,
+                rgba(255,255,255,0.1) 0%,
                 rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 100%
+                rgba(0,0,0,0.05) 100%
             );
             border-radius: 2px;
         }
 
         footer {
             z-index: 10;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid #e5e7eb;
+            background: #fafafa;
         }
 
-        /* Ensure main content doesn't overlap with footer */
         .content-wrapper {
             margin-bottom: 4rem;
         }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.35);
+            transform: translateY(-3px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+        }
+
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Professional modal styling */
+        .modal-search-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Info box styling */
+        .info-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.06));
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Better button hover effects */
+        button:not(.custom-table):hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        button:not(.custom-table):active {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modal header styling */
+        .modal-header-gradient {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        /* Search input icon styling */
+        input::placeholder {
+            color: #d1d5db;
+            font-weight: 500;
+        }
+
+        /* Large modal on desktop */
+        @media (min-width: 1024px) {
+            .modal-search-container {
+                min-height: 400px;
+            }
+        }
+
+        /* Small modal adjustments */
+        @media (max-width: 640px) {
+            .modal-search-container {
+                min-height: auto;
+            }
+        }
+
+        /* Professional section title styling */
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title .accent-bar {
+            display: inline-block;
+            width: 6px;
+            height: 32px;
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Smooth transitions for all interactive elements */
+        * {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        button, input, textarea, select {
+            transition: all 0.3s ease;
+        }
+
+        .input-modern {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+            background: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .input-modern:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12), 0 0 20px rgba(59, 130, 246, 0.1);
+            background: #f0f9ff;
+            outline: none;
+        }
+
+        .input-modern::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .custom-table thead {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .custom-table thead th {
+            color: #1f2937;
+            font-weight: 700;
+            padding: 16px 14px;
+            text-align: left;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background-color: transparent;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding-left: 0;
+            box-shadow: inset 4px 0 0 #3b82f6;
+        }
+
+        .custom-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .custom-table tbody td {
+            padding: 14px 14px;
+            color: #1f2937;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 768px) {
+            .cube-container {
+                display: none;
+            }
+
+            .loading-counter {
+                bottom: 35%;
+            }
+
+            .loading-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .typing-animation {
+                font-size: 1.5rem;
+            }
+
+            .content-wrapper {
+                margin-bottom: 5rem;
+                padding: 16px;
+            }
+
+            .content-wrapper h1 {
+                font-size: 2rem;
+            }
+
+            .content-wrapper p {
+                font-size: 0.95rem;
+            }
+
+            .btn-primary {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+
+            .input-modern {
+                font-size: 1rem;
+                padding: 12px;
+            }
+
+            .modal-content {
+                max-height: 90vh;
+                padding: 20px;
+                margin: 16px;
+                border-radius: 12px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.75rem;
+            }
+
+            .modal-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .custom-table {
+                font-size: 0.85rem;
+            }
+
+            .custom-table thead th {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+
+            .custom-table tbody td {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+
+            /* Flex direction for inputs on mobile */
+            .flex.sm\:flex-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            /* Button sizing on mobile */
+            button {
+                min-height: 44px;
+            }
+
+            input {
+                min-height: 44px;
+            }
+
+            .loading-text {
+                font-size: 0.8rem;
+                margin-top: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .typing-animation {
+                font-size: 1.2rem;
+                border-right: 2px solid rgba(59, 130, 246, 0.8);
+            }
+
+            .content-wrapper {
+                padding: 12px;
+            }
+
+            .content-wrapper h1 {
+                font-size: 1.5rem;
+            }
+
+            .content-wrapper > div:nth-child(2) {
+                margin-bottom: 20px;
+            }
+
+            .btn-primary {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+                border-radius: 8px;
+            }
+
+            .modal-content {
+                max-height: 95vh;
+                padding: 16px;
+                margin: 12px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-content h3 {
+                font-size: 1rem;
+            }
+
+            .flex.justify-between {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .input-modern {
+                width: 100%;
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            .custom-table {
+                font-size: 0.75rem;
+            }
+
+            .custom-table thead th {
+                padding: 8px;
+                font-size: 0.75rem;
+            }
+
+            .custom-table tbody td {
+                padding: 8px;
+                font-size: 0.75rem;
+            }
+
+            .loading-text {
+                font-size: 0.75rem;
+            }
+
+            text {
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .content-wrapper {
+                max-width: 900px;
+                margin: 0 auto 4rem;
+            }
+
+            .modal-content {
+                max-width: 900px;
+            }
+
+            .btn-primary {
+                padding: 16px 40px;
+                font-size: 1.1rem;
+            }
+
+            .custom-table thead th {
+                padding: 16px;
+                font-size: 0.95rem;
+            }
+
+            .custom-table tbody td {
+                padding: 16px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .loader-container {
+                justify-content: space-around;
+            }
+
+            .loading-counter {
+                bottom: auto;
+                position: relative;
+            }
+
+            .cube {
+                width: 50px;
+                height: 50px;
+            }
+
+            .face {
+                width: 50px;
+                height: 50px;
+            }
+
+            .front { transform: translateZ(25px); }
+            .back { transform: translateZ(-25px) rotateY(180deg); }
+            .right { transform: translateX(25px) rotateY(90deg); }
+            .left { transform: translateX(-25px) rotateY(-90deg); }
+            .top { transform: translateY(-25px) rotateX(90deg); }
+            .bottom { transform: translateY(25px) rotateX(-90deg); }
+        }
+
+        /* Landscape orientation */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .cube-container {
+                display: none;
+            }
+
+            .loading-counter {
+                font-size: 1.5rem;
+                bottom: 45%;
+            }
+
+            .loading-text {
+                margin-top: 5px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-primary,
+            button,
+            input {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .btn-primary:active {
+                transform: scale(0.98);
+            }
+
+            .custom-table tbody tr:active {
+                background-color: #f0f9ff;
+            }
+        }
+
+        /* Fix for safe area on notched devices */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(8px, env(safe-area-inset-left));
+                padding-right: max(8px, env(safe-area-inset-right));
+                padding-top: max(8px, env(safe-area-inset-top));
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Improve text rendering on mobile */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input, button, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        /* Prevent zoom on input focus on iOS */
+        input:focus, textarea:focus, select:focus {
+            font-size: 16px;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Better modal performance */
+        .modal-content {
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        /* Section styling */
+        .section-header {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1rem;
+        }
+
+        .section-header::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #3b82f6, #1e40af);
+            border-radius: 2px;
+            margin-right: 12px;
+        }
+
+        /* Professional input focus animation */
+        .input-modern {
+            position: relative;
+        }
+
+        .input-modern::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #1e40af);
+            transition: width 0.3s ease;
+        }
+
+        .input-modern:focus::after {
+            width: 100%;
+        }
+
+
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-500 to-indigo-600 min-h-screen flex items-center justify-center text-white">
+<body class="bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen flex items-center justify-center text-gray-800 overflow-x-hidden">
     <div class="loader-container">
         <div class="cube-container">
             <div class="cube">
@@ -319,60 +844,110 @@
     <div class="main-content">
         <div class="content-wrapper">
             <!-- Landing Page Content -->
-            <div class="text-center animate-float">
-                <div class="typing-container mx-auto">
-                    <h1 class="text-3xl sm:text-5xl font-bold mb-6 transform transition-all duration-500 hover:scale-105 typing-animation">
-                        Welcome to Grade Viewer
+            <div class="text-center animate-float max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="typing-container mx-auto mb-4 sm:mb-6 lg:mb-8">
+                    <h1 class="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 transform transition-all duration-500 hover:scale-105 typing-animation">
+                        Grade Viewer
                     </h1>
                 </div>
-                <p class="text-lg sm:text-xl mb-8 transform transition-all duration-500 hover:text-white hover:shadow-lg">
-                    Effortlessly check your grades with a click.
-                </p>
-                <button id="openModal" class="bg-white text-blue-500 px-6 py-3 rounded-full shadow-lg hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-white transform transition-all duration-300 hover:scale-110 hover:shadow-xl">
-                    Request Grade
+                
+                <div class="mb-6 sm:mb-8 lg:mb-12 slide-in">
+                    <p class="text-base sm:text-lg lg:text-xl xl:text-2xl mb-2 sm:mb-3 lg:mb-4 text-blue-600 font-semibold">
+                        Academic Result Portal
+                    </p>
+                    <p class="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed">
+                        Access your academic results instantly. Enter your student number to view comprehensive grade information.
+                    </p>
+                </div>
+                
+                <button 
+                    id="openModal" 
+                    class="btn-primary bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-lg shadow-md text-base sm:text-lg font-semibold transform transition-all duration-300 hover:-translate-y-0.5 active:scale-95 w-full sm:w-auto">
+                    Get Your Grades
                 </button>
             </div>
 
             <!-- Modal -->
-            <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center transition-all duration-300">
-                <div class="bg-white rounded-lg shadow-lg w-4/5 lg:w-3/4 xl:w-[70%] p-6 sm:p-8 text-gray-800 scale-in">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold slide-in">Grade Viewer</h2>
-                        <button id="closeModal" class="text-gray-500 hover:text-gray-800 focus:outline-none text-3xl transform transition-all duration-300 hover:rotate-90">
-                            &times;
+            <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md hidden items-center justify-center transition-all duration-300 p-3 sm:p-4 lg:p-6 z-50 overflow-y-auto">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl sm:max-w-3xl lg:max-w-4xl xl:max-w-5xl text-gray-800 scale-in modal-content my-4 sm:my-auto overflow-hidden border border-gray-200">
+                    <!-- Modal Header -->
+                    <div class="modal-header-gradient px-4 sm:px-8 py-6 sm:py-8 flex items-center justify-between rounded-t-2xl">
+                        <div>
+                            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white slide-in">
+                                Grade Viewer
+                            </h2>
+                            <p class="text-blue-100 text-xs sm:text-sm mt-2">Access Your Academic Records</p>
+                        </div>
+                        <button 
+                            id="closeModal" 
+                            class="text-blue-100 hover:text-white hover:bg-blue-500 hover:bg-opacity-30 focus:outline-none text-2xl transform transition-all duration-300 p-2 rounded-full flex-shrink-0 w-10 h-10 flex items-center justify-center">
+                            ✕
                         </button>
                     </div>
-                    <!-- Embedded Grade Viewer Content -->
-                    <div class="bg-gray-100 p-4 sm:p-6 rounded-lg transform transition-all duration-300 hover:shadow-xl">
-                        <h1 class="text-xl sm:text-2xl font-bold mb-6 text-center slide-in">Grade Viewer</h1>
-                        <div class="mb-6 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                            <input 
-                                type="text" 
-                                id="studentNumber" 
-                                placeholder="Enter Student Number" 
-                                class="w-full sm:w-auto p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 hover:shadow-md">
-                            <button 
-                                id="searchStudent" 
-                                class="w-full sm:w-auto bg-blue-500 text-white p-2 rounded shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 hover:scale-105">
-                                Search
-                            </button>
-                            <button 
-                                id="clearSearch" 
-                                class="w-full sm:w-auto bg-gray-300 text-gray-700 p-2 rounded shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 transform transition-all duration-300 hover:scale-105">
-                                Clear
-                            </button>
+                    
+                    <!-- Modal Content -->
+                    <div class="p-4 sm:p-6 lg:p-8 bg-white min-h-96 flex flex-col justify-center">
+                        <!-- Search Section -->
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 sm:p-8 border-2 border-blue-100 shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 flex items-center">
+                                <span class="inline-block w-1.5 h-8 bg-gradient-to-b from-blue-600 to-blue-800 rounded-full mr-4 shadow-md"></span>
+                                Enter Student Number
+                            </h3>
+                            <p class="text-gray-600 text-sm mb-6 ml-6">Find your academic records</p>
+                            
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        id="studentNumber" 
+                                        placeholder="Student ID or Number" 
+                                        class="input-modern w-full px-5 py-4 rounded-xl text-sm sm:text-base border-2 border-gray-300 transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 shadow-sm hover:shadow-md placeholder-gray-400 font-medium"
+                                        autocomplete="off">
+                                    <svg class="w-5 h-5 absolute right-4 top-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                
+                                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                                    <button 
+                                        id="searchStudent" 
+                                        class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:from-blue-800 active:to-blue-900 text-white px-6 py-4 rounded-xl shadow-md hover:shadow-lg font-bold text-sm sm:text-base transform transition-all duration-300 hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center group">
+                                        <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                        Search Grades
+                                    </button>
+                                    <button 
+                                        id="clearSearch" 
+                                        class="flex-1 bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-700 px-6 py-4 rounded-xl font-bold text-sm sm:text-base transform transition-all duration-300 hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center border-2 border-gray-300 hover:border-gray-400 group">
+                                        <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="info-box mt-6 pt-6 px-4 py-3 rounded-lg border-l-4 border-blue-500 bg-blue-50">
+                                <p class="text-xs text-gray-600 flex items-start">
+                                    <svg class="w-4 h-4 mr-2 mt-0.5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span><strong>Tip:</strong> Your grades will appear here after searching for your student ID</span>
+                                </p>
+                            </div>
                         </div>
-                        <div class="overflow-x-auto transform transition-all duration-300">
-                            <table id="gradesTable" class="min-w-full bg-white border border-gray-300 mx-auto text-sm sm:text-base rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg">
-                                <thead>
-                                    <tr id="tableHeaders" class="bg-gray-200 transition-all duration-300 hover:bg-gray-300">
-                                        <!-- Headers will be dynamically generated -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be dynamically inserted here -->
-                                </tbody>
-                            </table>
+                        
+                        <!-- Results Container (Hidden Initially) -->
+                        <div id="resultsContainer" class="mt-8 hidden animate-fadeIn">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                <span class="inline-block w-1.5 h-8 bg-gradient-to-b from-green-600 to-green-800 rounded-full mr-4 shadow-md"></span>
+                                Grade Results
+                            </h3>
+                            <div class="overflow-x-auto rounded-2xl border-2 border-gray-200 shadow-md hover:shadow-lg transition-all duration-300">
+                                <table id="gradesTable" class="w-full bg-white text-xs sm:text-sm">
+                                    <thead>
+                                        <tr id="tableHeaders" class="custom-table bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-300">
+                                            <!-- Headers will be dynamically generated -->
+                                        </tr>
+                                    </thead>
+                                    <tbody class="custom-table divide-y divide-gray-200">
+                                        <!-- Data will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -392,45 +967,64 @@
         const tableHeaders = document.getElementById('tableHeaders');
         const tableBody = gradesTable.querySelector('tbody');
 
-        // Show the modal
         openModal.addEventListener('click', () => {
-            modal.style.opacity = '0';
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            setTimeout(() => {
-                modal.style.opacity = '1';
-            }, 10);
+            document.body.style.overflow = 'hidden';
         });
 
-        // Hide the modal
         closeModal.addEventListener('click', () => {
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
         });
 
-        // Close modal on clicking outside the modal
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
             }
         });
 
-        // Clear search input and reset the table
-        clearSearch.addEventListener('click', () => {
-            studentNumberInput.value = ''; // Clear the input field
-            tableHeaders.innerHTML = ''; // Clear the headers
-            tableBody.innerHTML = ''; // Clear the body
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
         });
 
-        // Binary Rain Animation
+        clearSearch.addEventListener('click', () => {
+            studentNumberInput.value = '';
+            tableHeaders.innerHTML = '';
+            tableBody.innerHTML = '';
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.classList.remove('animate-fadeIn');
+            studentNumberInput.focus();
+        });
+
+        // Function to show results when data is populated from prelimscript.js
+        window.showGradeResults = function() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (tableHeaders.innerHTML.trim() !== '' || tableBody.innerHTML.trim() !== '') {
+                resultsContainer.classList.remove('hidden');
+                resultsContainer.classList.add('animate-fadeIn');
+            }
+        };
+
+        // Function to hide results
+        window.hideGradeResults = function() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.classList.remove('animate-fadeIn');
+        };
+
         const canvas = document.getElementById('binaryBackground');
         const ctx = canvas.getContext('2d');
 
-        // Set canvas size
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -438,32 +1032,26 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Binary characters
         const binary = '01';
         const fontSize = 14;
         const columns = canvas.width / fontSize;
         const drops = [];
 
-        // Initialize drops
         for (let i = 0; i < columns; i++) {
             drops[i] = 1;
         }
 
         function draw() {
-            // Semi-transparent black background to create fade effect
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Green text
-            ctx.fillStyle = '#0F0';
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.08)';
             ctx.font = fontSize + 'px monospace';
 
-            // Draw binary characters
             for (let i = 0; i < drops.length; i++) {
                 const text = binary.charAt(Math.floor(Math.random() * binary.length));
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-                // Reset drop to top when it reaches bottom
                 if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
@@ -472,31 +1060,26 @@
             }
         }
 
-        // Animate
         setInterval(draw, 33);
 
-        // Function to restart typing animation
         function restartTypingAnimation() {
             const typingElement = document.querySelector('.typing-animation');
-            typingElement.style.animation = 'none';
-            typingElement.offsetHeight; // Trigger reflow
-            typingElement.style.animation = 'typing 2s steps(20) forwards, blink 0.8s infinite';
+            if (typingElement) {
+                typingElement.style.animation = 'none';
+                typingElement.offsetHeight;
+                typingElement.style.animation = 'typing 3s steps(30) forwards, blink 1s infinite';
+            }
         }
 
-        // Restart animation when clicking anywhere on the page (optional)
         document.addEventListener('click', restartTypingAnimation);
+        setInterval(restartTypingAnimation, 12000);
 
-        // Restart animation periodically (optional)
-        setInterval(restartTypingAnimation, 10000); // Restart every 10 seconds
-
-        // Loading animation handler
         document.addEventListener('DOMContentLoaded', function() {
             let counter = 0;
             const counterElement = document.getElementById('counter');
             const loader = document.querySelector('.loader-container');
             const mainContent = document.querySelector('.main-content');
             
-            // Counter animation
             const counterInterval = setInterval(() => {
                 counter += 1;
                 if (counter <= 100) {
@@ -505,22 +1088,17 @@
                 if (counter >= 100) {
                     clearInterval(counterInterval);
                     
-                    // Hide loader
                     loader.style.opacity = '0';
                     loader.style.transition = 'opacity 0.5s ease-in-out';
-                    
-                    // Show main content
                     mainContent.classList.add('visible');
                     
-                    // Remove loader after transition
                     setTimeout(() => {
                         loader.style.display = 'none';
                     }, 500);
                 }
-            }, 20); // Adjust speed of counting here (20ms = fast, 50ms = slower)
+            }, 20);
         });
 
-        // Create cube faces dynamically
         document.addEventListener('DOMContentLoaded', function() {
             const faces = document.querySelectorAll('.face');
             faces.forEach(face => {
@@ -528,12 +1106,12 @@
             });
         });
     </script>
-    <footer class="fixed bottom-0 left-0 w-full bg-black bg-opacity-50 text-white py-3 text-center backdrop-blur-sm">
-        <div class="container mx-auto">
-            <p class="text-sm">
-                Created by <span class="font-semibold hover:text-blue-300 transition-colors duration-300">Vbadua.2.01</span>
-                <span class="mx-2">|</span>
-                <span class="text-xs">© 2024 All Rights Reserved</span>
+    <footer class="fixed bottom-0 left-0 w-full py-2 sm:py-3 lg:py-4 text-center">
+        <div class="container mx-auto px-4">
+            <p class="text-xs sm:text-sm text-gray-600">
+                <span class="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-300 block sm:inline">Grade Viewer</span>
+                <span class="hidden sm:inline mx-2 text-gray-400">•</span>
+                <span class="text-xs text-gray-500 block sm:inline">© 2024 Academic Records System</span>
             </p>
         </div>
     </footer>
