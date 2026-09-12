@@ -2,540 +2,757 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
-    <title>Request your Grade right now!!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Viewer</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="head.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
-        .scale-in {
-            animation: scaleIn 0.5s ease-out;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #dbeafe;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #059669;
+            --error: #dc2626;
         }
 
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #3b82f6;
+                --primary-hover: #2563eb;
+                --primary-light: #1e3a5f;
+                --bg: #0f172a;
+                --surface: #1e293b;
+                --text: #f1f5f9;
+                --text-muted: #94a3b8;
+                --border: #334155;
+            }
         }
 
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        #binaryBackground {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.15;
-        }
-
-        /* Add more contrast to content */
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .typing-animation {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 3px solid;
-            width: 0;
-            animation: 
-                typing 2s steps(20) forwards,
-                blink 0.8s infinite;
-        }
-
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        @keyframes blink {
-            from { border-color: transparent }
-            50% { border-color: white }
-            to { border-color: transparent }
-        }
-
-        .typing-container {
-            display: inline-block;
-            max-width: fit-content;
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
         }
 
         .loader-container {
             position: fixed;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
+            background-color: var(--bg);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loader-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .main-content {
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease;
         }
 
         .main-content.visible {
             opacity: 1;
         }
 
-        @keyframes bounce {
-            0%, 100% { translate: 0px 36px; }
-            50% { translate: 0px 46px; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
 
-        @keyframes bounce2 {
-            0%, 100% { translate: 0px 46px; }
-            50% { translate: 0px 56px; }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
         }
 
-        @keyframes umbral {
-            0% { stop-color: #d3a5102e; }
-            50% { stop-color: rgba(211, 165, 16, 0.519); }
-            100% { stop-color: #d3a5102e; }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
         }
 
-        @keyframes particles {
-            0%, 100% { translate: 0px 16px; }
-            50% { translate: 0px 6px; }
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
 
-        #particles {
-            animation: particles 4s ease-in-out infinite;
+        .btn-secondary {
+            background-color: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
 
-        #animatedStop {
-            animation: umbral 4s infinite;
+        .btn-secondary:hover {
+            background-color: var(--bg);
         }
 
-        #bounce {
-            animation: bounce 4s ease-in-out infinite;
-            translate: 0px 36px;
+        .btn-secondary:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
 
-        #bounce2 {
-            animation: bounce2 4s ease-in-out infinite;
-            translate: 0px 46px;
-            animation-delay: 0.5s;
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .loading-counter {
-            position: absolute;
-            bottom: 30%;
-            font-size: 2rem;
-            color: #fff;
-            font-family: monospace;
-            text-align: center;
+        .input {
             width: 100%;
-            animation: heartbeat 1.5s ease-in-out infinite;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            background-color: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            transition: all 0.15s ease;
         }
 
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
         }
 
-        @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80% { content: '...'; }
+        .input::placeholder {
+            color: var(--text-muted);
         }
 
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.3); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.3); }
-            70% { transform: scale(1); }
+        .card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        .loading-text {
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--bg);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: var(--bg);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 720px;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .modal-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .modal-close:hover {
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 65vh;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group .input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
             font-size: 1rem;
-            margin-top: 10px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.5rem;
         }
 
-        .loading-text {
-            animation: glow 1.5s ease-in-out infinite;
+        .empty-state p {
+            font-size: 0.875rem;
         }
 
-        @keyframes glow {
-            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
-            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); }
-            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+        .result-count {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
         }
 
-        .cube-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            perspective: 1000px;
+        .result-count strong {
+            color: var(--text);
         }
 
-        .cube {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotate 8s infinite linear;
+        .verification-modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 60;
         }
 
-        .face {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border: 2px solid rgba(0, 0, 0, 0.2);
+        .verification-content {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 420px;
+            padding: 1.5rem;
+        }
+
+        .verification-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 2px;
-            background: #000;
+            gap: 0.75rem;
+            margin: 1rem 0;
         }
 
-        /* Real Rubik's cube colors */
-        .front .cube-piece { background: #FF0000; }  /* Red */
-        .back .cube-piece { background: #FFA500; }   /* Orange */
-        .right .cube-piece { background: #0000FF; }  /* Blue */
-        .left .cube-piece { background: #00FF00; }   /* Green */
-        .top .cube-piece { background: #FFFFFF; }    /* White */
-        .bottom .cube-piece { background: #FFFF00; } /* Yellow */
-
-        .cube-piece {
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-            animation: pieceSpin 3s infinite ease-in-out;
-            transform-style: preserve-3d;
-            border-radius: 2px;
+        .verification-item {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
         }
 
-        /* Enhanced cube animations */
-        @keyframes rotate {
-            0% { 
-                transform: rotateX(0) rotateY(0) rotateZ(0); 
-            }
-            33% { 
-                transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg); 
-            }
-            66% { 
-                transform: rotateX(180deg) rotateY(360deg) rotateZ(270deg); 
-            }
-            100% { 
-                transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); 
-            }
-
+        .verification-item:hover {
+            border-color: var(--primary);
         }
 
-        @keyframes pieceSpin {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(0.95) rotateY(10deg); }
+        .verification-item.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-light);
         }
 
-        .front { transform: translateZ(50px); }
-        .back { transform: translateZ(-50px) rotateY(180deg); }
-        .right { transform: translateX(50px) rotateY(90deg); }
-        .left { transform: translateX(-50px) rotateY(-90deg); }
-        .top { transform: translateY(-50px) rotateX(90deg); }
-        .bottom { transform: translateY(50px) rotateX(-90deg); }
+        .verification-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        /* Add shine effect */
-        .cube-piece::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,0.3) 0%,
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 100%
-            );
-            border-radius: 2px;
+        .verification-progress {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .verification-progress strong {
+            color: var(--text);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 100;
+            transform: translateX(calc(100% + 1.5rem));
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--error);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
         }
 
         footer {
-            z-index: 10;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--border);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8125rem;
         }
 
-        /* Ensure main content doesn't overlap with footer */
-        .content-wrapper {
-            margin-bottom: 4rem;
+        @media (max-width: 640px) {
+            .modal-content {
+                border-radius: 0;
+                max-height: 100vh;
+            }
+
+            .modal-overlay.open .modal-content {
+                transform: none;
+            }
+
+            .form-group {
+                flex-direction: column;
+            }
+
+            .form-group .btn {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 0.625rem 0.75rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-500 to-indigo-600 min-h-screen flex items-center justify-center text-white">
-    <div class="loader-container">
-        <div class="cube-container">
-            <div class="cube">
-                <div class="face front">
-                    ${Array(9).fill('<div class="cube-piece"></div>').join('')}
+<body>
+    <div class="loader-container" id="loader">
+        <div class="spinner" aria-label="Loading"></div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <main class="min-h-screen flex flex-col">
+            <header class="bg-[var(--surface)] border-b border-[var(--border)] sticky top-0 z-10">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-[var(--primary)] flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-semibold text-[var(--text)]">Grade Viewer</h1>
+                                <p class="text-xs text-[var(--text-muted)]">Student Grade Management</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="face back">
-                    ${Array(9).fill('<div class="cube-piece"></div>').join('')}
-                </div>
-                <div class="face right">
-                    ${Array(9).fill('<div class="cube-piece"></div>').join('')}
-                </div>
-                <div class="face left">
-                    ${Array(9).fill('<div class="cube-piece"></div>').join('')}
-                </div>
-                <div class="face top">
-                    ${Array(9).fill('<div class="cube-piece"></div>').join('')}
-                </div>
-                <div class="face bottom">
-                    ${Array(9).fill('<div class="cube-piece"></div>').join('')}
+            </header>
+
+            <div class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div class="w-full max-w-xl">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl sm:text-4xl font-bold text-[var(--text)] tracking-tight mb-3">
+                            View Your Grades
+                        </h2>
+                        <p class="text-[var(--text-muted)] text-lg">
+                            Enter your student number to retrieve your academic records
+                        </p>
+                    </div>
+
+                    <div class="card p-6 sm:p-8">
+                        <form id="gradeForm" class="space-y-4">
+                            <div>
+                                <label for="studentNumber" class="block text-sm font-medium text-[var(--text)] mb-2">
+                                    Student Number
+                                </label>
+                                <input
+                                    type="text"
+                                    id="studentNumber"
+                                    name="studentNumber"
+                                    placeholder="Enter your student number"
+                                    class="input"
+                                    autocomplete="off"
+                                    required
+                                    aria-describedby="studentNumberHelp"
+                                >
+                                <p id="studentNumberHelp" class="mt-1.5 text-sm text-[var(--text-muted)]">
+                                    This is the unique identifier provided by your institution
+                                </p>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-full" id="submitBtn">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Search Grades
+                            </button>
+                        </form>
+                    </div>
+
+                    <p class="mt-6 text-center text-sm text-[var(--text-muted)]">
+                        Data sourced from Google Sheets API
+                    </p>
                 </div>
             </div>
-        </div>
-        <div class="loading-counter">
-            <span id="counter" class="text-white">0</span><span class="text-white">%</span>
-            <div class="loading-text">Loading<span class="loading-dots"></span></div>
-        </div>
-    </div>
-    <canvas id="binaryBackground"></canvas>
-    <div class="main-content">
-        <div class="content-wrapper">
-            <!-- Landing Page Content -->
-            <div class="text-center animate-float">
-                <div class="typing-container mx-auto">
-                    <h1 class="text-3xl sm:text-5xl font-bold mb-6 transform transition-all duration-500 hover:scale-105 typing-animation">
-                        Welcome to Grade Viewer
-                    </h1>
+
+            <footer>
+                <div class="max-w-4xl mx-auto px-4">
+                    <p>Created by <span class="font-medium text-[var(--text)]">Vbadua.2.01</span> | © 2024 All Rights Reserved</p>
                 </div>
-                <p class="text-lg sm:text-xl mb-8 transform transition-all duration-500 hover:text-white hover:shadow-lg">
-                    Effortlessly check your grades with a click.
-                </p>
-                <button id="openModal" class="bg-white text-blue-500 px-6 py-3 rounded-full shadow-lg hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-white transform transition-all duration-300 hover:scale-110 hover:shadow-xl">
-                    Request Grade
+            </footer>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title">Grade Results</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close modal">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
+            <div class="modal-body">
+                <form id="searchForm" class="form-group mb-4">
+                    <input
+                        type="text"
+                        id="modalStudentNumber"
+                        placeholder="Enter Student Number"
+                        class="input"
+                        autocomplete="off"
+                        aria-label="Student number"
+                    >
+                    <button type="submit" class="btn btn-primary" id="searchStudent">
+                        Search
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="clearSearch">
+                        Clear
+                    </button>
+                </form>
 
-            <!-- Modal -->
-            <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center transition-all duration-300">
-                <div class="bg-white rounded-lg shadow-lg w-4/5 lg:w-3/4 xl:w-[70%] p-6 sm:p-8 text-gray-800 scale-in">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold slide-in">Grade Viewer</h2>
-                        <button id="closeModal" class="text-gray-500 hover:text-gray-800 focus:outline-none text-3xl transform transition-all duration-300 hover:rotate-90">
-                            &times;
-                        </button>
+                <div id="resultsContainer">
+                    <p id="resultCount" class="result-count hidden"></p>
+                    <div class="table-container" id="tableContainer" style="display: none;">
+                        <table id="gradesTable">
+                            <thead>
+                                <tr id="tableHeaders"></tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
                     </div>
-                    <!-- Embedded Grade Viewer Content -->
-                    <div class="bg-gray-100 p-4 sm:p-6 rounded-lg transform transition-all duration-300 hover:shadow-xl">
-                        <h1 class="text-xl sm:text-2xl font-bold mb-6 text-center slide-in">Grade Viewer</h1>
-                        <div class="mb-6 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                            <input 
-                                type="text" 
-                                id="studentNumber" 
-                                placeholder="Enter Student Number" 
-                                class="w-full sm:w-auto p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 hover:shadow-md">
-                            <button 
-                                id="searchStudent" 
-                                class="w-full sm:w-auto bg-blue-500 text-white p-2 rounded shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 hover:scale-105">
-                                Search
-                            </button>
-                            <button 
-                                id="clearSearch" 
-                                class="w-full sm:w-auto bg-gray-300 text-gray-700 p-2 rounded shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 transform transition-all duration-300 hover:scale-105">
-                                Clear
-                            </button>
-                        </div>
-                        <div class="overflow-x-auto transform transition-all duration-300">
-                            <table id="gradesTable" class="min-w-full bg-white border border-gray-300 mx-auto text-sm sm:text-base rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg">
-                                <thead>
-                                    <tr id="tableHeaders" class="bg-gray-200 transition-all duration-300 hover:bg-gray-300">
-                                        <!-- Headers will be dynamically generated -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be dynamically inserted here -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="empty-state" id="emptyState">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3>No grades found</h3>
+                        <p>Enter a student number to search for records</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <svg id="toastIcon" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="toastMessage" class="text-sm text-[var(--text)]"></span>
+    </div>
+
     <script src="prelimscript.js"></script>
     <script>
+        const loader = document.getElementById('loader');
+        const mainContent = document.getElementById('mainContent');
         const modal = document.getElementById('modal');
-        const openModal = document.getElementById('openModal');
+        const openModal = document.getElementById('submitBtn');
         const closeModal = document.getElementById('closeModal');
-        const clearSearch = document.getElementById('clearSearch');
+        const gradeForm = document.getElementById('gradeForm');
+        const searchForm = document.getElementById('searchForm');
+        const modalStudentInput = document.getElementById('modalStudentNumber');
         const studentNumberInput = document.getElementById('studentNumber');
-        const gradesTable = document.getElementById('gradesTable');
+        const clearSearch = document.getElementById('clearSearch');
+        const tableContainer = document.getElementById('tableContainer');
+        const emptyState = document.getElementById('emptyState');
+        const resultCount = document.getElementById('resultCount');
         const tableHeaders = document.getElementById('tableHeaders');
-        const tableBody = gradesTable.querySelector('tbody');
+        const tableBody = document.getElementById('tableBody');
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toastIcon');
+        const toastMessage = document.getElementById('toastMessage');
 
-        // Show the modal
-        openModal.addEventListener('click', () => {
-            modal.style.opacity = '0';
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+        window.searchStudentGrade = searchStudentGrade;
+        window.displayTable = displayTable;
+        window.clearTable = clearTable;
+
+        document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                modal.style.opacity = '1';
-            }, 10);
+                loader.classList.add('hidden');
+                mainContent.classList.add('visible');
+            }, 800);
         });
 
-        // Hide the modal
-        closeModal.addEventListener('click', () => {
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
+        gradeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentNumber = studentNumberInput.value.trim();
+            if (studentNumber) {
+                modalStudentInput.value = studentNumber;
+                openModalFunc();
+                searchStudentGrade();
+            }
         });
 
-        // Close modal on clicking outside the modal
+        function openModalFunc() {
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modalStudentInput.focus(), 100);
+        }
+
+        function closeModalFunc() {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        closeModal.addEventListener('click', closeModalFunc);
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
+            if (e.target === modal) closeModalFunc();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('open')) {
+                closeModalFunc();
             }
         });
 
-        // Clear search input and reset the table
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentNumber = modalStudentInput.value.trim();
+            if (studentNumber) {
+                studentNumberInput.value = studentNumber;
+                searchStudentGrade();
+            }
+        });
+
         clearSearch.addEventListener('click', () => {
-            studentNumberInput.value = ''; // Clear the input field
-            tableHeaders.innerHTML = ''; // Clear the headers
-            tableBody.innerHTML = ''; // Clear the body
+            modalStudentInput.value = '';
+            studentNumberInput.value = '';
+            clearTable();
+            resultCount.classList.add('hidden');
+            tableContainer.style.display = 'none';
+            emptyState.style.display = 'block';
+            modalStudentInput.focus();
         });
 
-        // Binary Rain Animation
-        const canvas = document.getElementById('binaryBackground');
-        const ctx = canvas.getContext('2d');
-
-        // Set canvas size
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        // Binary characters
-        const binary = '01';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-
-        // Initialize drops
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
+        function clearTable() {
+            tableHeaders.innerHTML = '';
+            tableBody.innerHTML = '';
         }
 
-        function draw() {
-            // Semi-transparent black background to create fade effect
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function displayTable(headers, data) {
+            clearTable();
 
-            // Green text
-            ctx.fillStyle = '#0F0';
-            ctx.font = fontSize + 'px monospace';
+            const combinedHeader = 'SY-SEM-TERM';
+            const newHeaders = [
+                combinedHeader,
+                ...headers.slice(3, 7),
+                ...headers.slice(10)
+            ];
 
-            // Draw binary characters
-            for (let i = 0; i < drops.length; i++) {
-                const text = binary.charAt(Math.floor(Math.random() * binary.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                // Reset drop to top when it reaches bottom
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                drops[i]++;
-            }
-        }
-
-        // Animate
-        setInterval(draw, 33);
-
-        // Function to restart typing animation
-        function restartTypingAnimation() {
-            const typingElement = document.querySelector('.typing-animation');
-            typingElement.style.animation = 'none';
-            typingElement.offsetHeight; // Trigger reflow
-            typingElement.style.animation = 'typing 2s steps(20) forwards, blink 0.8s infinite';
-        }
-
-        // Restart animation when clicking anywhere on the page (optional)
-        document.addEventListener('click', restartTypingAnimation);
-
-        // Restart animation periodically (optional)
-        setInterval(restartTypingAnimation, 10000); // Restart every 10 seconds
-
-        // Loading animation handler
-        document.addEventListener('DOMContentLoaded', function() {
-            let counter = 0;
-            const counterElement = document.getElementById('counter');
-            const loader = document.querySelector('.loader-container');
-            const mainContent = document.querySelector('.main-content');
-            
-            // Counter animation
-            const counterInterval = setInterval(() => {
-                counter += 1;
-                if (counter <= 100) {
-                    counterElement.textContent = counter;
-                }
-                if (counter >= 100) {
-                    clearInterval(counterInterval);
-                    
-                    // Hide loader
-                    loader.style.opacity = '0';
-                    loader.style.transition = 'opacity 0.5s ease-in-out';
-                    
-                    // Show main content
-                    mainContent.classList.add('visible');
-                    
-                    // Remove loader after transition
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                    }, 500);
-                }
-            }, 20); // Adjust speed of counting here (20ms = fast, 50ms = slower)
-        });
-
-        // Create cube faces dynamically
-        document.addEventListener('DOMContentLoaded', function() {
-            const faces = document.querySelectorAll('.face');
-            faces.forEach(face => {
-                face.innerHTML = Array(9).fill('<div class="cube-piece"></div>').join('');
+            newHeaders.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header || 'N/A';
+                tableHeaders.appendChild(th);
             });
-        });
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+
+                const combinedValue = [row[0], row[1], row[2]].filter(Boolean).join(' ');
+                const td = document.createElement('td');
+                td.textContent = combinedValue || 'N/A';
+                tr.appendChild(td);
+
+                row.slice(3, 7).forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell || 'N/A';
+                    tr.appendChild(td);
+                });
+
+                row.slice(10).forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell || 'N/A';
+                    tr.appendChild(td);
+                });
+
+                tableBody.appendChild(tr);
+            });
+
+            resultCount.textContent = `Showing ${data.length} record${data.length !== 1 ? 's' : ''}`;
+            resultCount.classList.remove('hidden');
+            tableContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+        }
+
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} show`;
+
+            if (type === 'error') {
+                toastIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />';
+                toastIcon.classList.add('text-red-500');
+            } else {
+                toastIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />';
+                toastIcon.classList.remove('text-red-500');
+                toastIcon.classList.add('text-green-500');
+            }
+
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        const originalFetchAndDisplayGrades = window.fetchAndDisplayGrades;
+        window.fetchAndDisplayGrades = async function(studentNumber) {
+            try {
+                await originalFetchAndDisplayGrades(studentNumber);
+            } catch (error) {
+                showToast('Failed to fetch grades. Please try again.', 'error');
+            }
+        };
+
+        const originalShowVerificationBox = window.showVerificationBox;
+        window.showVerificationBox = function(onSuccess) {
+            const wrapper = (resolve) => {
+                originalShowVerificationBox(() => {
+                    resolve();
+                    onSuccess();
+                });
+            };
+            return new Promise(wrapper);
+        };
     </script>
-    <footer class="fixed bottom-0 left-0 w-full bg-black bg-opacity-50 text-white py-3 text-center backdrop-blur-sm">
-        <div class="container mx-auto">
-            <p class="text-sm">
-                Created by <span class="font-semibold hover:text-blue-300 transition-colors duration-300">Vbadua.2.01</span>
-                <span class="mx-2">|</span>
-                <span class="text-xs">© 2024 All Rights Reserved</span>
-            </p>
-        </div>
-    </footer>
 </body>
 </html>

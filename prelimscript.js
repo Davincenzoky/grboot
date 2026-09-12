@@ -1,5 +1,3 @@
-    document.getElementById('searchStudent').addEventListener('click', searchStudentGrade);
-
     const availableImages = {
         fruits: [
             {
@@ -156,27 +154,27 @@
     function showVerificationBox(onSuccess) {
         const verificationSet = generateRandomVerificationSet();
         const verificationBox = document.createElement('div');
-        verificationBox.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 scale-in';
+        verificationBox.className = 'verification-modal';
         
         const content = document.createElement('div');
-        content.className = 'bg-white rounded-lg p-6 shadow-xl max-w-2xl w-full mx-4 transform transition-all duration-300';
+        content.className = 'verification-content';
         content.innerHTML = `
             <div class="text-center">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Human Verification</h3>
-                <p class="text-gray-600 mb-4">${verificationSet.question}</p>
-                <p id="selectionProgress" class="text-sm text-gray-500 mb-4">Selected: 0/5 correct images</p>
-                <div class="grid grid-cols-3 gap-4 mb-4">
+                <h3 class="text-lg font-semibold text-[var(--text)] mb-2">Human Verification</h3>
+                <p class="text-sm text-[var(--text-muted)] mb-4">${verificationSet.question}</p>
+                <p id="selectionProgress" class="verification-progress">Selected: <strong>0</strong>/${verificationSet.requiredSelections} correct images</p>
+                <div class="verification-grid">
                     ${verificationSet.images.map((img, index) => `
-                        <button class="verification-image-btn p-2 border rounded hover:border-blue-500 transition-all duration-300" data-index="${index}">
-                            <img src="${img}" alt="Verification image" class="w-full h-32 object-cover rounded">
+                        <button class="verification-item" data-index="${index}" aria-label="Verification image ${index + 1}">
+                            <img src="${img}" alt="Verification image" loading="lazy">
                         </button>
                     `).join('')}
                 </div>
-                <div class="flex justify-center space-x-4">
-                    <button id="verifySelections" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transform transition-all duration-300 hover:scale-105">
+                <div class="flex justify-center gap-3 mt-4">
+                    <button id="verifySelections" class="btn btn-primary" disabled>
                         Verify Selections
                     </button>
-                    <button id="cancelVerification" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transform transition-all duration-300 hover:scale-105">
+                    <button id="cancelVerification" class="btn btn-secondary">
                         Cancel
                     </button>
                 </div>
@@ -186,69 +184,58 @@
         document.body.appendChild(verificationBox);
         verificationBox.appendChild(content);
 
-        const imageButtons = content.querySelectorAll('.verification-image-btn');
+        const items = content.querySelectorAll('.verification-item');
         const verifyButton = content.querySelector('#verifySelections');
         const cancelButton = content.querySelector('#cancelVerification');
         const progressText = content.querySelector('#selectionProgress');
 
-        // Function to update progress display
+        let correctSelected = 0;
+        let wrongSelected = 0;
+
         function updateProgress() {
             const selectedImages = Array.from(selectedIndices).map(index => 
                 verificationSet.images[index]
             );
-            const correctCount = selectedImages.filter(img => 
+            correctSelected = selectedImages.filter(img => 
                 verificationSet.correctIndices.includes(verificationSet.images.indexOf(img))
             ).length;
-            const wrongCount = selectedImages.length - correctCount;
+            wrongSelected = selectedImages.length - correctSelected;
 
-            let message = `Selected: ${correctCount}/${verificationSet.requiredSelections} correct images`;
-            if (wrongCount > 0) {
-                message += ` (and ${wrongCount} incorrect)`;
+            progressText.innerHTML = `Selected: <strong>${correctSelected}</strong>/${verificationSet.requiredSelections} correct images`;
+            if (wrongSelected > 0) {
+                progressText.innerHTML += ` <span class="text-[var(--error)]">(${wrongSelected} incorrect)</span>`;
             }
-            progressText.textContent = message;
+            verifyButton.disabled = !(correctSelected === verificationSet.requiredSelections && wrongSelected === 0);
         }
 
-        // Handle image selection
-        imageButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                const index = parseInt(button.dataset.index);
+        items.forEach((item) => {
+            item.addEventListener('click', () => {
+                const index = parseInt(item.dataset.index);
                 if (selectedIndices.has(index)) {
                     selectedIndices.delete(index);
-                    button.classList.remove('border-blue-500', 'border-2');
+                    item.classList.remove('selected');
                 } else {
                     selectedIndices.add(index);
-                    button.classList.add('border-blue-500', 'border-2');
+                    item.classList.add('selected');
                 }
                 updateProgress();
             });
         });
 
-        // Handle verification
         verifyButton.addEventListener('click', async () => {
-            const selectedOriginalIndices = Array.from(selectedIndices).map(index => 
-                verificationSet.images[index]
-            );
-
-            const correctCount = selectedOriginalIndices.filter(img => 
-                verificationSet.correctIndices.includes(verificationSet.images.indexOf(img))
-            ).length;
-            const wrongCount = selectedOriginalIndices.length - correctCount;
-
-            // Check against the required number of selections
-            if (correctCount === verificationSet.requiredSelections && wrongCount === 0) {
+            if (correctSelected === verificationSet.requiredSelections && wrongSelected === 0) {
                 selectedIndices.clear();
                 document.body.removeChild(verificationBox);
                 onSuccess();
                 return;
             }
 
-            // Update error messages
             let message = '';
-            if (correctCount < verificationSet.requiredSelections) {
-                message = `You need to select more images. You have selected ${correctCount}/${verificationSet.requiredSelections} correct images.`;
-            } else if (correctCount === verificationSet.requiredSelections && wrongCount > 0) {
-                message = `You have selected all ${verificationSet.requiredSelections} correct images but also ${wrongCount} incorrect ones. Only select the correct images.`;
-            } else if (correctCount > verificationSet.requiredSelections) {
+            if (correctSelected < verificationSet.requiredSelections) {
+                message = `You need to select more images. You have selected ${correctSelected}/${verificationSet.requiredSelections} correct images.`;
+            } else if (correctSelected === verificationSet.requiredSelections && wrongSelected > 0) {
+                message = `You have selected all ${verificationSet.requiredSelections} correct images but also ${wrongSelected} incorrect ones. Only select the correct images.`;
+            } else if (correctSelected > verificationSet.requiredSelections) {
                 message = `You have selected too many images. Only select ${verificationSet.requiredSelections} correct images.`;
             }
             
@@ -261,16 +248,9 @@
 
         cancelButton.addEventListener('click', () => {
             selectedIndices.clear();
-            verificationBox.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(verificationBox);
-                clearTable();
-            }, 300);
+            document.body.removeChild(verificationBox);
+            clearTable();
         });
-
-        setTimeout(() => {
-            verificationBox.style.opacity = '1';
-        }, 10);
     }
 
     async function searchStudentGrade() {
@@ -290,11 +270,13 @@
     async function fetchAndDisplayGrades(studentNumber) {
         // Create and show loading animation
         const loadingBox = document.createElement('div');
-        loadingBox.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50';
+        loadingBox.className = 'fixed inset-0 flex items-center justify-center z-50';
+        loadingBox.style.backgroundColor = 'rgba(15, 23, 42, 0.5)';
+        loadingBox.style.backdropFilter = 'blur(4px)';
         loadingBox.innerHTML = `
-            <div class="bg-white rounded-lg p-8 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                <p class="text-gray-600">Loading your grades...</p>
+            <div style="background-color: var(--surface); border: 1px solid var(--border); border-radius: 1rem; padding: 2rem; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                <div class="spinner" style="margin: 0 auto 1rem;"></div>
+                <p style="color: var(--text-muted);">Loading your grades...</p>
             </div>
         `;
         document.body.appendChild(loadingBox);
