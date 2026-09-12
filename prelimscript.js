@@ -339,12 +339,12 @@
         tableHeaders.innerHTML = '';
         tableBody.innerHTML = '';
 
-        // Modify headers to reflect the combined column and remove column H (index 7)
+        // Modify headers to reflect the combined column and remove column H (index 7), I (index 8), J (index 9)
         const combinedHeader = 'SY-SEM-TERM     ';
         const newHeaders = [
             combinedHeader,
             ...headers.slice(3, 7),  // Take columns D through G
-            ...headers.slice(8)      // Skip H and take the rest
+            ...headers.slice(10)     // Skip H, I, J and take the rest
         ];
 
         // Populate headers
@@ -374,7 +374,7 @@
                 tr.appendChild(td);
             });
             
-            row.slice(8).forEach(cell => {       // Skip H and add remaining columns
+            row.slice(10).forEach(cell => {       // Skip H, I, J and add remaining columns
                 const td = document.createElement('td');
                 td.textContent = cell || 'N/A';
                 td.classList.add('text-center', 'p-1');
